@@ -12,6 +12,9 @@ function Main() {
     //and fetch new member as they get added 
     useEffect(() => {
         //this code here work when the app loads
+        //onSnapshot each time the contents change, another call updates the document snapshot
+        //docs.data return all my data in an object
+        //.crew it's our field in our database from firebase
         db.collection('crews').onSnapshot(snapshot => {
          setCrew(snapshot.docs.map(doc => doc.data().crew));
        })
