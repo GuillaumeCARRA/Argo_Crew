@@ -13,14 +13,15 @@ function Main() {
     useEffect(() => {
         //this code here work when the app loads
         db.collection('crews').onSnapshot(snapshot => {
-        console.log(snapshot.docs.map(doc => doc.data().crew))
-         setCrew(snapshot.docs.map(doc => doc.data().crew))
-         
+         setCrew(snapshot.docs.map(doc => doc.data().crew));
        })
     }, [])
 
     const addCrewMember = (event) => {
         event.preventDefault();
+        db.collection('crews').add({
+            crew: input
+        });
         setCrew([...crews, input]);
         setInput('');
     }
@@ -56,7 +57,7 @@ function Main() {
             <h2>Membres de l'équipage</h2>
                 <section className="member-list">
                     {crews.map(crew =>(
-                        <div>
+                        <div key={crew}>
                             <div className="member-item">{crew}</div>
                         </div>
                     ))}
