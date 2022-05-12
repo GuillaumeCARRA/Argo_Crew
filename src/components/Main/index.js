@@ -1,8 +1,30 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import db from '../../firebase';
 
 import './main.css';
 
 function Main() {
+
+    const [crews, setCrew] = useState([]);
+    const [input, setInput] = useState('');
+
+    //when the app loads, we need to listen to the db 
+    //and fetch new member as they get added 
+    useEffect(() => {
+        //this code here work when the app loads
+        db.collection('crews').onSnapshot(snapshot => {
+        console.log(snapshot.docs.map(doc => doc.data().crew))
+         setCrew(snapshot.docs.map(doc => doc.data().crew))
+         
+       })
+    }, [])
+
+    const addCrewMember = (event) => {
+        event.preventDefault();
+        setCrew([...crews, input]);
+        setInput('');
+    }
+
     return (
         <main>
   
@@ -17,24 +39,28 @@ function Main() {
                     name="name" 
                     type="text" 
                     placeholder="Charalampos" 
+                    value={input}
+                    onChange={(event) =>{
+                        setInput(event.target.value);
+                    }}
                 />
-                <button type="submit">
+                <button 
+                onClick={addCrewMember}
+                type="submit"
+                >
                     Envoyer
                 </button>
             </form>
             
             {/*Member list*/}
             <h2>Membres de l'équipage</h2>
-            <section className="member-list">
-                <div className="member-item">Eleftheria</div>
-                <div className="member-item">Gennadios</div>
-                <div className="member-item">Lysimachos</div>
-                <div className="member-item">Lysimachos</div>
-                <div className="member-item">Lysimachos</div>
-                <div className="member-item">Lysimachos</div>
-                <div className="member-item">Lysimachos</div>
-                
-            </section>
+                <section className="member-list">
+                    {crews.map(crew =>(
+                        <div>
+                            <div className="member-item">{crew}</div>
+                        </div>
+                    ))}
+                </section>
         </main>
     )
 }
